@@ -65,7 +65,7 @@ export default{
     })
   },
   methods: {
-    _setSliderWidth () {
+    _setSliderWidth (isResize) {
       this.children = this.$refs.sliderGroup.children // 获取slidergroup的每个子元素
 
       let width = 0
@@ -81,7 +81,7 @@ export default{
       // 如果是循环播放并且是首次初始化时，需要再加上头尾两个重复图片的宽度。
       // 而当浏览器调整大小的时候，父元素中的子元素已经包含了首位重复图片的元素，因此不需要进行宽度的增加。
 
-      if (this.loop) {
+      if (this.loop && !isResize) {
         width += 2 * sliderWidth
       }
       this.$refs.sliderGroup.style.width = width + 'px'
@@ -111,13 +111,22 @@ export default{
           this._play()
         }
       })
+      this.slider.on('beforeScrollStart', () => {
+        if (this.autoPlay) {
+          clearTimeout(this.timer)
+        }
+      })
     },
     _play () {
       this.timer = setTimeout(() => {
         this.slider.next()
       }, this.interval)
     }
+  },
+  destroyed () {
+    clearTimeout(this.timer)
   }
+
 }
 </script>
 
