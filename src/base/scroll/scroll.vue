@@ -7,7 +7,6 @@
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll'
 export default {
-  name: 'scroll',
   props: {
     probeType: {// 监听滚动事件
       type: Number,
@@ -17,7 +16,7 @@ export default {
       type: Boolean,
       default: true
     },
-    listenScroll: {
+    listenScroll: { // 是否监听滚动事件
       type: Boolean,
       default: false
     },
@@ -40,6 +39,12 @@ export default {
         probeType: this.probeType,
         click: this.click
       })
+      if (this.listenScroll) { // 派发scroll事件
+        let me = this
+        this.scroll.on('scroll', (pos) => {
+          me.$emit('scroll', pos)
+        })
+      }
     },
     enable () {
       this.scroll && this.scroll.enable()
